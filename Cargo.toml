@@ -1,0 +1,9 @@
+[package]
+name = "nowdo"
+version = "0.1.0"
+authors = ["kyle merfeld <kmerfeld1@gmail.com>"]
+
+[dependencies]
+notify-rust = "3.4.1"
+regex = "0.2"
+
