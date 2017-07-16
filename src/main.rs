@@ -1,5 +1,7 @@
 extern crate notify_rust;
 extern crate regex;
+extern crate chrono;
+use chrono::Local;
 use std::thread;
 use std::time::Duration;
 use regex::Regex;
@@ -58,6 +60,8 @@ fn main() {
                     .show()
                     .unwrap();
                 println!("{}\n{}", title, body);
+                let date = Local::now();
+                println!("{}\n", date.format("%Y-%m-%d %H:%M:%S"));
 
             }
             //sleep for ten minutes
