@@ -115,6 +115,16 @@ fn notify(time: u64) {
                 println!("{}\n", date.format("%Y-%m-%d %H:%M:%S"));
 
             }
+            //If there are no tasks to do
+            else {
+                println!("No Tasks to do");
+                Notification::new()
+                    .summary("No more tasks")
+                    .body("Add more tasks or stop nowdo untill you have more to do")
+                    .show()
+                    .unwrap();
+            }
+
             //sleep for x minutes
             let wait = Duration::new(time * 60, 0);
             thread::sleep(wait);
