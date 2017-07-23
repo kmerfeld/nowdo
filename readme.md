@@ -1,4 +1,4 @@
-#nowdo
+# nowdo
 nowdo is an todo list that helps you stay on track.
 
 I have tried a few different todo lists, and they all had one problem in common. If you don't look at them they are not very useful.
@@ -9,14 +9,14 @@ be working on
 It will read off the first item in your todo list every 10 minutes and 
 create a notification for you reminding you.
 
-#time
+## time
 You can specify a different time by useing the --time flag,
 ``` 
 ./nowdo -t 30
 ```
 The above will cause nowdo to alert you every 30 minutes
 
-#editing todo.md
+## editing todo.md
 You can edit todo.md however you normally would, its just a simple markdown
 file afterall, but you can also use `./nowdo edit` to use your $EDITOR your editor to edit your todo list
 
