@@ -2,9 +2,11 @@
 name = "nowdo"
 version = "0.1.0"
 authors = ["kyle merfeld <kmerfeld1@gmail.com>"]
+about = "A todo list that reminds you what your current task should be"
 
 [dependencies]
 notify-rust = "3.4.1"
 regex = "0.2"
 chrono = "0.4.0"
+clap = "2"
 
