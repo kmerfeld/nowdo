@@ -35,3 +35,20 @@ This wont be shown by nowdo until you open
 #buy milk
 im almost out
 ```
+
+## tags
+If you want to have multiple projects in your todo file, you should use tags, they allow you to have multiple projects in your todo file.
+
+When using the -t flag you can specify that only tasks with that tag 
+will be shown.
+
+Tag example:
+```
+#task without a tag
+this task doesnt have a tag
+
+#task with a task
+%Im a tag
+This task has a tag
+```
+if you ran `nowdo -t "Im a tag"` nowdo would only show you the second task

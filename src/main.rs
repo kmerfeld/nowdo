@@ -1,4 +1,5 @@
-extern crate notify_rust; extern crate regex;
+extern crate notify_rust;
+extern crate regex;
 extern crate chrono;
 #[macro_use] extern crate clap;
 use clap::{Arg, App, SubCommand};
@@ -20,11 +21,18 @@ fn main() {
         .author(crate_authors!("\n"))
         .version(crate_version!())
         .arg(Arg::with_name("interval")
-             .short("t")
+             .short("d")
              .long("time")
              .value_name("TIME")
              .takes_value(true)
              .help("How long in minutes to wait between notifications"))
+        .arg(Arg::with_name("tag")
+             .short("t")
+             .long("tag")
+             .value_name("TAG")
+             .takes_value(true)
+             .help("only show tasks that have the tag in the tagline"))
+
         .subcommand(SubCommand::with_name("edit")
                     .about("Edit the todo file with $EDITOR"))
         .get_matches();
@@ -35,7 +43,9 @@ fn main() {
     else {
         let t = matches.value_of("interval").unwrap_or("10");
         let time: u64 = t.parse().unwrap_or(10);
-        notify(time);
+        let tag = matches.value_of("tag");
+
+        notify(time, tag);
     }
 }
 
@@ -71,8 +81,9 @@ fn edit() {
     Command::new(editor).arg(file).status().unwrap();
 }
 
+
 ///Send a notification every x minutes
-fn notify(time: u64) {
+fn notify(time: u64, tag: Option<&str>) {
     //get path
     //If the file already exists
     let path = get_path();
@@ -83,27 +94,66 @@ fn notify(time: u64) {
             let mut contents = String::new();
             buf_reader.read_to_string(&mut contents).unwrap();
 
-            let re = Regex::new(r"^#").unwrap();
-            let item: Vec<&str> = re.split(&contents).collect();
+            let re = Regex::new(r"(^#|\n#)").unwrap();
+            let task: Vec<&str> = re.split(&contents).collect();
 
-            //Get the first section
-            if item.len() > 1 {
-                //Get title
-                let top: String = item[1].to_owned();
-                let item: Vec<&str> = top.split("\n").collect();
-                let title: String = item[0].to_owned();
+            let mut title = String::new();
+            let mut body  = String::new();
+            let mut tag_match = false;
+            let is_tag = tag.is_some();
 
-                //Get body
-                let mut lines: Vec<String> = Vec::new();
-                for i in 1..item.len() {
-                    if !item[i].is_empty() {
-                        if re.is_match(&item[i]) { break;}
-                        else {
-                            lines.push(item[i].to_owned());
+            //We check values untill we 
+            for i in 1..task.len() {
+                //Get the first section
+                if task.len() > 1 {
+                    //Get title
+                    let top: String = task[i].to_owned();
+                    let item: Vec<&str> = top.split("\n").collect();
+                    title = item[0].to_owned();
+
+                    //Get body
+                    let mut tags = String::new();
+                    let mut lines: Vec<String> = Vec::new();
+                    for i in 1..item.len() {
+                        if !item[i].is_empty() {
+                            //Stop at next task
+                            if re.is_match(&item[i]) { break;}
+
+                            else {
+                                //If tagline
+                                if item[i].starts_with("%") { 
+                                    tags = item[i].trim_matches('%').to_owned(); 
+                                }
+                                //If normal line
+                                else {
+                                    lines.push(item[i].to_owned());
+                                }
+                            }
                         }
                     }
+
+                    //Body of the task
+                    body = lines.join("\n");
+
+                    //Do we care about the tag?
+                    if is_tag {
+                        if tags == tag.unwrap() {
+                            tag_match = true;
+                            //We already have our values,
+                            //we can stop looking
+                            break;
+                        }
+                    }
+                    //There is no tag, so we dont care about looking for them
+                    else {
+                        break;
+                    }
                 }
-                let body = lines.join("\n");
+            }
+
+            //If there was no tag or we have a match
+            if !is_tag || tag_match{
+
                 //Send notification
                 Notification::new()
                     .summary(&title)
@@ -115,7 +165,7 @@ fn notify(time: u64) {
                 println!("{}\n", date.format("%Y-%m-%d %H:%M:%S"));
 
             }
-            //If there are no tasks to do
+            //Couldnt find the tag, or no tasks
             else {
                 println!("No Tasks to do");
                 Notification::new()
@@ -128,7 +178,6 @@ fn notify(time: u64) {
             //sleep for x minutes
             let wait = Duration::new(time * 60, 0);
             thread::sleep(wait);
-
         }
     }
     // Create todo.md if it doesnt exist and explain how to use it
@@ -143,6 +192,4 @@ fn notify(time: u64) {
             .show()
             .unwrap();
     }
-
 }
-
