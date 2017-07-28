@@ -118,7 +118,6 @@ fn notify(time: u64, tag: Option<&str>) {
                         if !item[i].is_empty() {
                             //Stop at next task
                             if re.is_match(&item[i]) { break;}
-
                             else {
                                 //If tagline
                                 if item[i].starts_with("%") { 
@@ -131,18 +130,22 @@ fn notify(time: u64, tag: Option<&str>) {
                             }
                         }
                     }
-
                     //Body of the task
                     body = lines.join("\n");
 
                     //Do we care about the tag?
                     if is_tag {
-                        if tags == tag.unwrap() {
-                            tag_match = true;
-                            //We already have our values,
-                            //we can stop looking
-                            break;
+                        let tag_list = tags.split(",");
+
+                        let mut matches = false;
+                        for i in tag_list {
+                            if i.trim() == tag.unwrap() {
+                                tag_match = true;
+                                //We already have our values, we can stop looking
+                                matches = true;
+                            }
                         }
+                        if matches { break; }
                     }
                     //There is no tag, so we dont care about looking for them
                     else {
@@ -153,7 +156,6 @@ fn notify(time: u64, tag: Option<&str>) {
 
             //If there was no tag or we have a match
             if !is_tag || tag_match{
-
                 //Send notification
                 Notification::new()
                     .summary(&title)
@@ -163,7 +165,6 @@ fn notify(time: u64, tag: Option<&str>) {
                 println!("{}\n{}", title, body);
                 let date = Local::now();
                 println!("{}\n", date.format("%Y-%m-%d %H:%M:%S"));
-
             }
             //Couldnt find the tag, or no tasks
             else {
@@ -174,7 +175,6 @@ fn notify(time: u64, tag: Option<&str>) {
                     .show()
                     .unwrap();
             }
-
             //sleep for x minutes
             let wait = Duration::new(time * 60, 0);
             thread::sleep(wait);

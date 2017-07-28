@@ -42,13 +42,18 @@ If you want to have multiple projects in your todo file, you should use tags, th
 When using the -t flag you can specify that only tasks with that tag 
 will be shown.
 
+To use tags, start a line with `%` and then have one or more tags. tags can be delimited by `,`
+
 Tag example:
 ```
 #task without a tag
 this task doesnt have a tag
 
-#task with a task
+#task with a tag
 %Im a tag
 This task has a tag
+
+%task with multiple tags
+&tag1, tag2, other tag
 ```
 if you ran `nowdo -t "Im a tag"` nowdo would only show you the second task
