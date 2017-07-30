@@ -53,7 +53,7 @@ this task doesnt have a tag
 %Im a tag
 This task has a tag
 
-%task with multiple tags
-&tag1, tag2, other tag
+#task with multiple tags
+%tag1, tag2, other tag
 ```
 if you ran `nowdo -t "Im a tag"` nowdo would only show you the second task
