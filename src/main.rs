@@ -123,6 +123,8 @@ fn notify(time: u64, tag: Option<&str>) {
                                 if item[i].starts_with("%") { 
                                     tags = item[i].trim_matches('%').to_owned(); 
                                 }
+                                //comments
+                                else if item[i].starts_with("--") {}
                                 //If normal line
                                 else {
                                     lines.push(item[i].to_owned());

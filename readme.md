@@ -12,7 +12,7 @@ create a notification for you reminding you.
 ## time
 You can specify a different time by useing the --time flag,
 ``` 
-./nowdo -t 30
+./nowdo -d 30
 ```
 The above will cause nowdo to alert you every 30 minutes
 
@@ -57,3 +57,8 @@ This task has a tag
 %tag1, tag2, other tag
 ```
 if you ran `nowdo -t "Im a tag"` nowdo would only show you the second task
+
+
+
+##Comments
+any line starting with '--' will be ignored by nowdo
